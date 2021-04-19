@@ -298,7 +298,11 @@ class lockArticlesAndFiles extends plxPlugin {
 	public function contentFolder() {
 		$plxAdmin = plxAdmin::getInstance();
 
-		$this->path = PLX_ROOT.$plxAdmin->aConf['medias'].'/';
+		if($plxAdmin->aConf['userfolders'] AND $_SESSION['profil']==PROFIL_WRITER) {
+			$this->path = PLX_ROOT.$_SESSION['user'].'/';
+		} else {
+			$this->path = PLX_ROOT.$plxAdmin->aConf['medias'].'/';
+		}
 		$this->aDirs = (is_dir($this->path)?$this->myGetAllDirs($this->path):"");
 
 		$str  = "\n".'<select class="no-margin" id="id_lockdir" size="1" name="lockdir">'."\n";
