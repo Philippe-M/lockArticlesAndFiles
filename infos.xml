@@ -2,9 +2,9 @@
 <document>
 	<title><![CDATA[lockArticlesAndFiles]]></title>
 	<author><![CDATA[Rockyhorror, Flipflip]]></author>
-	<version>1.0</version>
-	<date>12/04/2021</date>
-	<site>http://philippe-maladjian.fr</site>
+	<version>1.2</version>
+	<date>28/04/2021</date>
+	<site>https://philippe-maladjian.fr</site>
 	<description><![CDATA[Ajout d'un mot de passe aux articles, liste un répertoire pour proposer des fichiers au téléchargement et cryptage des url des fichiers]]></description>
-	<requirements></requirements>
+	<scope>site</scope>
 </document>
