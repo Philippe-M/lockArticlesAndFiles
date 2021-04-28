@@ -42,9 +42,13 @@ Lorsque le visiteur affichera l'article tout les fichiers présents dans le rép
 
 Changelog
 ====
+* 1.4 - 28/04/2021
+    * correction des Warning
+    * correction suite à l'introduction de la durée de vie d'une session en 1.2
+    
 * 1.3 - 28/04/2021
     * Correction suite à la mise à jour 1.2
-    
+
 * 1.2 - 28/04/2021
     * Ajout d'une durée de vie de session. Si elle dépasse 5 mn alors le mot de passe est de nouveau demandé.
 

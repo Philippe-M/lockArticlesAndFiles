@@ -2,8 +2,8 @@
 /**
  * Plugin lockArticlesAndFiles
  *
- * @version	1.0
- * @date	12/04/2021
+ * @version	1.3
+ * @date	28/04/2021
  * @author	Rockyhorror, Flipflip
  **/
 
@@ -11,8 +11,8 @@ require("PasswordHash.php");
 
 class lockArticlesAndFiles extends plxPlugin {
 
-	public $path = null; # chemin vers les médias
-	public $dir = null;
+	public $path = '';
+	public $dir = '';
 	public $activeLockdir = '';
 	public $img_supported = array('.png', '.gif', '.jpg', '.jpeg', '.bmp', '.webp'); # images formats supported
 	public $img_exts = '/\.(jpe?g|png|gif|bmp|webp)$/i';
@@ -40,13 +40,13 @@ class lockArticlesAndFiles extends plxPlugin {
 		$this->addHook('plxMotorPreChauffageEnd', 'plxMotorPreChauffageEnd');
 		$this->addHook('plxMotorDemarrageEnd', 'plxMotorDemarrageEnd');
 		$this->addHook('plxFeedConstructLoadPlugins', 'plxFeedConstructLoadPlugins');
-		$this->addHook('AdminArticleSidebar','AdminArticleSidebar');
+		$this->addHook('AdminArticleSidebar', 'AdminArticleSidebar');
 		$this->addHook('plxAdminEditArticleXml','plxAdminEditArticleXml');
 		$this->addHook('plxMotorParseArticle','plxMotorParseArticle');
 		$this->addHook('plxShowConstruct', 'plxShowConstruct');
 		$this->addHook('showIconIfLock','showIconIfLock');
-		$this->addHook('AdminIndexTop', 'AdminIndexTop');
-		$this->addHook('AdminIndexFoot', 'AdminIndexFoot');
+		/*$this->addHook('AdminIndexTop', 'AdminIndexTop');
+		$this->addHook('AdminIndexFoot', 'AdminIndexFoot');*/
 		$this->addHook('plxFeedPreChauffageEnd','plxFeedPreChauffageEnd');
 		$this->addHook('plxFeedDemarrageEnd','plxFeedDemarrageEnd');
 		/*$this->addHook('AdminCategory','AdminCategory');
@@ -333,8 +333,8 @@ class lockArticlesAndFiles extends plxPlugin {
 	 * @return	stdio
 	 * @author	Rockyhorror
 	 **/
-	public function AdminArticleSidebar(){
-			echo '<div class="grid">
+	public function AdminArticleSidebar() {
+		echo '<div class="grid">
 					<div class="col sml-12">
 						<label for="id_password">'.$this->getlang('L_PASSWORD_FIELD_LABEL').'&nbsp;:</label>
 						<?php $image = "<img src=\"".PLX_PLUGINS."lockArticlesAndFiles/locker.png\" alt=\"\" />";
@@ -595,7 +595,7 @@ class lockArticlesAndFiles extends plxPlugin {
 			// L'article est vérouillé par un mot de passe
 			if($plxMotor->plxRecord_arts->f('password') == true) {
 				if($_SESSION['lockArticlesAndFiles']['articles'][$plxMotor->cible] == true) {
-					if($capture[3] === 'dl') {
+					if(!empty($capture[3]) && $capture[3] === 'dl') {
 						$file = plxEncrypt::decryptId($capture[4], $this->getParam('keyurl'));
 						if(file_exists($file)) {
 							header('Content-Description: File Transfer');
@@ -615,7 +615,7 @@ class lockArticlesAndFiles extends plxPlugin {
 				}
 			} else {
 				// L'article n'est pas vérouillé par un mot de passe
-				if($capture[3] === 'dl') {
+				if(!empty($capture[3]) && $capture[3] === 'dl') {
 					$file = $capture[4];
 					if(file_exists($file)) {
 						header('Content-Description: File Transfer');
@@ -677,10 +677,10 @@ class lockArticlesAndFiles extends plxPlugin {
 		$plxMotor = plxMotor::getInstance();
 
 		$showForm = false;
-		if($plxMotor->mode == 'article_password') {
-			// Timer pour gérer la durée de vie d'une session
+		// Timer pour gérer la durée de vie d'une session
+		if($plxMotor->mode == 'article' && !empty($plxMotor->plxRecord_arts->f('password'))) {
 			if(!empty($_SESSION['lockArticlesAndFiles']['timer'])) {
-				if(time() - $_SESSION['lockArticlesAndFiles']['timer'] > 300) {
+				if((time() - $_SESSION['lockArticlesAndFiles']['timer']) > 10) {
 					unset($_SESSION['lockArticlesAndFiles']);
 					$_SESSION['lockArticlesAndFiles']['timer'] = time();
 					$url = $plxMotor->urlRewrite('?article'.intval($plxMotor->plxRecord_arts->f('numero')).'/'.$plxMotor->plxRecord_arts->f('url'));
@@ -689,7 +689,10 @@ class lockArticlesAndFiles extends plxPlugin {
 				}
 			} else {
 				$_SESSION['lockArticlesAndFiles']['timer'] = time();
-			}			
+			}
+		}
+		if($plxMotor->mode == 'article_password') {
+			$_SESSION['lockArticlesAndFiles']['timer'] = time();
 			if(isset($_POST['lockArticlesAndFiles']) && isset($_POST['password'])) {
 				$passwordhash = (($a = $plxMotor->plxRecord_arts->f('password')) == false )? "": plxUtils::getValue($a);
 				$pw = strip_tags(substr($_POST['password'],0,72));
@@ -760,7 +763,6 @@ class lockArticlesAndFiles extends plxPlugin {
 				$plxMotor->cible = '../../'.PLX_PLUGINS.'lockArticlesAndFiles/form';
 				$plxMotor->template = 'static.php';
 			}
-
 	}
 
 	/*
