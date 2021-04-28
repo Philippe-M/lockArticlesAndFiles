@@ -42,9 +42,12 @@ Lorsque le visiteur affichera l'article tout les fichiers présents dans le rép
 
 Changelog
 ====
+* 1.2 - 28/04/2021
+    * Ajout d'une durée de vie de session. Si elle dépasse 5 mn alors le mot de passe est de nouveau demandé.
+
 * 1.1 - 19/04/2021
-    * - Ajout de la gestion du répertoire par utilisateur.
-    
+    * Ajout de la gestion du répertoire par utilisateur.
+
 * 1.0 - 14/04/2021
     * Mise à jour de la librairie [PasswordHash](http://www.openwall.com/phpass);
     * Ajout du champ *liste répertoire* dans rédaction article;

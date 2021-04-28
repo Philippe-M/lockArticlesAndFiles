@@ -677,6 +677,19 @@ class lockArticlesAndFiles extends plxPlugin {
 		$plxMotor = plxMotor::getInstance();
 
 		$showForm = false;
+		// Timer pour gérer la durée de vie d'une session
+		if(!empty($_SESSION['lockArticlesAndFiles']['timer'])) {
+			if(time() - $_SESSION['lockArticlesAndFiles']['timer'] > 300) {
+				unset($_SESSION['lockArticlesAndFiles']);
+				$_SESSION['lockArticlesAndFiles']['timer'] = time();
+				$url = $plxMotor->urlRewrite('?article'.intval($plxMotor->plxRecord_arts->f('numero')).'/'.$plxMotor->plxRecord_arts->f('url'));
+				header('Location: '.$url);
+				exit;
+			}
+		} else {
+			$_SESSION['lockArticlesAndFiles']['timer'] = time();
+		}
+
 		if($plxMotor->mode == 'article_password') {
 			if(isset($_POST['lockArticlesAndFiles']) && isset($_POST['password'])) {
 				$passwordhash = (($a = $plxMotor->plxRecord_arts->f('password')) == false )? "": plxUtils::getValue($a);
