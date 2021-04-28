@@ -6,5 +6,4 @@
 	<date>28/04/2021</date>
 	<site>https://philippe-maladjian.fr</site>
 	<description><![CDATA[Ajout d'un mot de passe aux articles, liste un répertoire pour proposer des fichiers au téléchargement et cryptage des url des fichiers]]></description>
-	<scope>site</scope>
 </document>
